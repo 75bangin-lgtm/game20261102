@@ -1,0 +1,181 @@
+<!DOCTYPE html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>두 글자 탐정 · 사자성어</title><style>
+*{box-sizing:border-box}body{margin:0;background:#f3f1e9;color:#203e37;font-family:system-ui,-apple-system,sans-serif;line-height:1.6}main{max-width:760px;margin:auto;padding:24px 18px 60px}header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:26px}small,.muted{color:#62746e}h1{font-size:clamp(28px,6vw,42px);margin:8px 0}h2{margin:0 0 12px}.card{background:#fffef9;border:1px solid #dfE3d9;border-radius:26px;padding:clamp(20px,5vw,38px);box-shadow:0 12px 40px #203e3708}.tag{font-size:12px;letter-spacing:2px;font-weight:800;color:#387c66}.badge{background:#e3ecdf;padding:8px 14px;border-radius:30px;white-space:nowrap}button,select,input{font:inherit}button{cursor:pointer;border:1px solid #d4ded4;border-radius:14px;background:#fffef9;color:#203e37;padding:15px 18px;min-height:54px;font-weight:700}button:hover:not(:disabled){border-color:#227b60;background:#eef5eb}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #e4a836;outline-offset:3px}button:disabled{cursor:default;opacity:.65}.primary{background:#21664f;color:white;border-color:#21664f}.primary:hover:not(:disabled){background:#174c3b;color:white}.wide{width:100%;margin-top:18px}select,input{width:100%;padding:14px;border:1px solid #cbd7cd;border-radius:12px;background:white;color:#203e37}label{display:block;margin:20px 0 7px;font-weight:700}.stats{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-weight:700}.bar{height:7px;background:#e8ece3;border-radius:9px;overflow:hidden;margin:16px 0 30px}.bar i{display:block;height:100%;background:#d29b35;transition:width .15s linear}.puzzle{display:flex;justify-content:center;gap:8px;margin:24px 0 30px}.tile{width:clamp(50px,13vw,88px);height:clamp(64px,17vw,104px);display:grid;place-items:center;font-size:clamp(30px,7vw,48px);font-weight:800;border-radius:15px;background:#edf1e6}.blank{background:#f8edcf;color:#9c742d;border:2px dashed #dbbd76}.options{display:grid;grid-template-columns:1fr 1fr;gap:12px}.options button{font-size:23px;min-height:76px}.options .correct{background:#ddf0df;border-color:#4b9360;opacity:1}.options .wrong{background:#fae4df;border-color:#c47461;opacity:1}.hint{margin:16px 0;padding:14px;background:#fff4d9;border-radius:12px}.feedback{margin-top:22px;padding-top:20px;border-top:1px solid #dce3d8}.answer{font-size:25px;font-weight:800}.actions{display:flex;gap:10px;margin-top:18px}.actions button{flex:1}.score{font-size:64px;font-weight:850;line-height:1.2;margin:20px 0}.review{padding:16px 0;border-bottom:1px solid #e0e5db}.hidden{display:none!important}footer{text-align:center;margin-top:22px;font-size:13px;color:#62746e}p{margin:10px 0}.notice{font-size:13px;color:#8b523e}@media(max-width:440px){main{padding:16px 12px 36px}.card{border-radius:20px}header{margin-bottom:18px}.badge{font-size:13px}.actions{flex-wrap:wrap}.actions button{flex-basis:40%}}@media(max-height:500px) and (orientation:landscape){main{max-width:900px}.puzzle{margin:12px}.tile{height:64px}.card{padding:20px}.bar{margin:10px 0}}
+</style><main><header><div><div class="tag">하루 열 문제, 어휘 한 걸음</div><strong>두 글자 탐정</strong></div><span class="badge" id="best">최고 0점</span></header><section class="card" id="home"><div class="tag">四字成語 QUIZ</div><h1>두 글자로 찾는<br>네 글자의 지혜.</h1><p class="muted">빈칸에 들어갈 두 글자를 맞혀 보세요.<br>중학생을 위한 사자성어 <span id="count"></span>개가 준비되어 있어요.</p><label for="mode">정답 입력 방식</label><select id="mode"><option value="choice">4지선다 · 보기에서 고르기</option><option value="input">직접 입력 · 두 글자 쓰기</option></select><p style="margin-top:20px">① 한 판 10문제 · 문제당 15초<br>② 정답 10점 · 힌트 사용 후 정답 7점<br>③ 오답·시간 초과 0점 · 해설 중에는 시간 정지</p><button class="primary wide" id="start">게임 시작 →</button><p class="notice" id="storage"></p></section><section class="card hidden" id="play"><div class="stats"><span id="progress"></span><span id="points"></span><span id="time" role="timer"></span></div><div class="bar"><i id="clock"></i></div><div style="text-align:center"><div class="tag" id="direction"></div><div class="puzzle" id="puzzle" aria-label="문제"></div></div><div id="choices" class="options"></div><form id="form" class="hidden"><label for="typed">빈칸에 들어갈 한글 두 글자</label><input id="typed" autocomplete="off" placeholder="예: 일석" maxlength="10"><button class="primary wide" type="submit" id="submit">정답 확인</button></form><button class="wide" id="hint">💡 뜻풀이 힌트 보기 · 정답 시 3점 감점</button><div id="hintText" class="hint hidden"></div><div id="feedback" class="feedback hidden" role="status" aria-live="polite"></div><button id="next" class="primary wide hidden">다음 문제 →</button><button id="quit" class="wide">이번 판 종료</button></section><section id="result" class="card hidden"><div class="tag" id="resultTag">오늘의 탐정 기록</div><h1>수고했어요!</h1><div class="score" id="score"></div><p id="summary"></p><p class="muted" id="record"></p><div class="actions"><button class="primary" id="again">다시 하기</button><button id="reviewStart">틀린 문제 재도전</button><button id="back">처음으로</button></div><h2 style="margin-top:30px">오답 복습</h2><div id="reviews"></div></section><footer>두 글자 탐정 · 인터넷 없이 즐기는 사자성어 연습</footer></main><script>
+'use strict';
+const raw=`가가호호|家家戶戶|집집마다, 모든 집을 이르는 말.
+가렴주구|苛斂誅求|세금을 가혹하게 거두고 재물을 억지로 빼앗음.
+각골난망|刻骨難忘|입은 은혜를 뼈에 새길 만큼 잊지 못함.
+각주구검|刻舟求劍|상황이 달라졌는데도 낡은 방법을 고집함.
+감언이설|甘言利說|남의 비위를 맞추는 달콤한 말과 이로운 듯한 말.
+감탄고토|甘呑苦吐|자기에게 이로우면 받아들이고 불리하면 버림.
+갑론을박|甲論乙駁|서로 자기 주장을 내세우며 상대의 주장을 반박함.
+개과천선|改過遷善|지난 잘못을 고치고 착하게 됨.
+거두절미|去頭截尾|앞뒤의 설명을 빼고 요점만 말함.
+견물생심|見物生心|물건을 보면 가지고 싶은 마음이 생김.
+결자해지|結者解之|일을 저지른 사람이 그 일을 해결해야 함.
+결초보은|結草報恩|죽어서라도 잊지 않고 은혜를 갚음.
+경거망동|輕擧妄動|깊이 생각하지 않고 가볍고 함부로 행동함.
+경국지색|傾國之色|나라를 위태롭게 할 만큼 뛰어난 미모를 이르는 말.
+고군분투|孤軍奮鬪|도움 없이 홀로 힘껏 싸우거나 애씀.
+고립무원|孤立無援|홀로 떨어져 도움을 받을 곳이 없음.
+고진감래|苦盡甘來|고생이 끝나면 즐거움이 옴.
+과유불급|過猶不及|지나친 것은 모자란 것과 같음.
+괄목상대|刮目相對|실력이 크게 발전하여 눈을 비비고 다시 볼 정도임.
+교각살우|矯角殺牛|작은 흠을 고치려다가 큰일을 그르침.
+구사일생|九死一生|죽을 고비를 여러 차례 넘기고 겨우 살아남음.
+구우일모|九牛一毛|아주 많은 것 가운데 극히 적은 부분.
+권선징악|勸善懲惡|착한 일을 권하고 악한 일을 벌함.
+금상첨화|錦上添花|좋은 일에 또 좋은 일이 더해짐.
+금시초문|今始初聞|지금 처음으로 들음.
+금의환향|錦衣還鄕|성공하여 고향으로 돌아옴.
+금지옥엽|金枝玉葉|매우 귀하게 여기는 자손을 이르는 말.
+기고만장|氣高萬丈|기세가 대단하거나 우쭐하여 거만함.
+기사회생|起死回生|거의 죽을 지경에서 다시 살아남.
+기상천외|奇想天外|생각이 매우 기발하고 뜻밖임.
+난공불락|難攻不落|공격하기 어려워 좀처럼 무너뜨릴 수 없음.
+난형난제|難兄難弟|어느 쪽이 더 나은지 가리기 어려움.
+남가일몽|南柯一夢|덧없는 부귀영화나 한바탕의 헛된 꿈.
+내우외환|內憂外患|안팎에서 생기는 걱정과 어려움.
+노심초사|勞心焦思|몹시 마음을 쓰며 애를 태움.
+다다익선|多多益善|많으면 많을수록 좋음.
+단도직입|單刀直入|말을 돌리지 않고 바로 요점을 말함.
+대기만성|大器晩成|큰 인물이 되려면 오랜 시간과 노력이 필요함.
+대동소이|大同小異|작은 차이는 있으나 대체로 비슷함.
+동고동락|同苦同樂|괴로움과 즐거움을 함께함.
+동문서답|東問西答|묻는 말과 전혀 관계없는 대답을 함.
+동병상련|同病相憐|같은 어려움을 겪는 사람끼리 서로 가엾게 여김.
+동분서주|東奔西走|여기저기 바쁘게 돌아다님.
+동상이몽|同床異夢|함께 행동하면서도 속으로는 서로 다른 생각을 함.
+두문불출|杜門不出|집에만 있고 밖에 나가지 않음.
+마이동풍|馬耳東風|남의 말을 귀담아듣지 않고 흘려버림.
+막상막하|莫上莫下|실력의 높고 낮음을 가리기 어려움.
+만사형통|萬事亨通|모든 일이 뜻대로 잘 이루어짐.
+명실상부|名實相符|이름이나 명성과 실제가 서로 들어맞음.
+명약관화|明若觀火|불을 보듯 분명하고 뻔함.
+무릉도원|武陵桃源|세상의 근심을 잊고 살 만한 이상적인 곳.
+문전성시|門前成市|찾아오는 사람이 매우 많음.
+문전박대|門前薄待|찾아온 사람을 문 앞에서 푸대접함.
+물아일체|物我一體|외부의 사물과 자신이 하나가 된 듯한 경지.
+박장대소|拍掌大笑|손뼉을 치며 크게 웃음.
+반신반의|半信半疑|반쯤 믿으면서도 반쯤 의심함.
+배은망덕|背恩忘德|남에게 입은 은혜를 잊고 배반함.
+백년대계|百年大計|먼 미래를 내다보고 세우는 큰 계획.
+백년해로|百年偕老|부부가 평생을 함께하며 늙음.
+백발백중|百發百中|쏠 때마다 맞거나 예상이 언제나 들어맞음.
+백전백승|百戰百勝|싸울 때마다 모두 이김.
+백중지세|伯仲之勢|서로 우열을 가리기 어려운 형세.
+부전자전|父傳子傳|아버지의 성질이나 행동 등이 아들에게 이어짐.
+부화뇌동|附和雷同|자기 주관 없이 남의 의견을 따라감.
+분골쇄신|粉骨碎身|온 힘을 다하여 정성을 쏟음.
+불로장생|不老長生|늙지 않고 오래 삶.
+불철주야|不撤晝夜|밤낮을 가리지 않고 쉬지 않음.
+사면초가|四面楚歌|주변이 모두 적이어서 도움을 받을 수 없음.
+사상누각|沙上樓閣|기초가 약하여 오래 유지되기 어려운 일이나 계획.
+사필귀정|事必歸正|모든 일은 결국 올바른 이치로 돌아감.
+산전수전|山戰水戰|세상의 온갖 어려움과 경험을 다 겪음.
+살신성인|殺身成仁|자신을 희생하여 옳은 도리를 이룸.
+삼고초려|三顧草廬|인재를 얻기 위해 여러 번 찾아가 정성을 다함.
+삼삼오오|三三五五|서너 명이나 대여섯 명씩 무리를 이룬 모양.
+새옹지마|塞翁之馬|좋은 일과 나쁜 일은 변화하여 예측하기 어려움.
+선견지명|先見之明|앞으로 일어날 일을 미리 내다보는 지혜.
+설상가상|雪上加霜|어려운 일에 또 다른 어려움이 겹침.
+설왕설래|說往說來|서로 여러 말을 주고받으며 논쟁함.
+속수무책|束手無策|손을 쓸 만한 방법이 전혀 없음.
+수수방관|袖手傍觀|나서지 않고 옆에서 구경만 함.
+수어지교|水魚之交|물과 물고기처럼 떨어질 수 없는 친밀한 사이.
+수주대토|守株待兔|우연한 행운을 다시 바라며 낡은 방식만 고집함.
+순망치한|脣亡齒寒|서로 밀접하여 한쪽이 망하면 다른 쪽도 위태로움.
+시종일관|始終一貫|처음부터 끝까지 한결같음.
+시행착오|試行錯誤|여러 방법을 시도하고 실패하며 해결책을 찾아감.
+십시일반|十匙一飯|여러 사람이 조금씩 힘을 보태 한 사람을 도움.
+십중팔구|十中八九|열 가운데 여덟이나 아홉으로, 거의 대부분.
+아전인수|我田引水|자기에게 유리한 쪽으로만 생각하거나 행동함.
+안하무인|眼下無人|다른 사람을 업신여기며 몹시 거만함.
+약육강식|弱肉強食|강한 자가 약한 자를 희생시키며 살아감.
+어부지리|漁夫之利|두 편이 다투는 사이에 제삼자가 얻는 이익.
+언중유골|言中有骨|평범한 말 속에 깊은 뜻이나 비판이 들어 있음.
+역지사지|易地思之|상대의 처지에서 생각함.
+오리무중|五里霧中|무슨 일인지 알 수 없어 갈피를 잡기 어려움.
+오매불망|寤寐不忘|자나 깨나 잊지 못함.
+오비이락|烏飛梨落|우연히 일이 겹쳐 의심을 받게 됨.
+오월동주|吳越同舟|서로 사이가 나쁜 사람들이 필요에 따라 협력함.
+온고지신|溫故知新|옛것을 익혀 새로운 것을 앎.
+와신상담|臥薪嘗膽|목표를 이루기 위해 고통을 참고 견딤.
+외유내강|外柔內剛|겉은 부드럽지만 속은 굳세고 강함.
+용두사미|龍頭蛇尾|시작은 거창하지만 끝은 보잘것없음.
+우공이산|愚公移山|꾸준히 노력하면 큰일도 이룰 수 있음.
+우왕좌왕|右往左往|어찌할 줄 몰라 이리저리 왔다 갔다 함.
+우유부단|優柔不斷|망설이기만 하며 결단을 내리지 못함.
+유구무언|有口無言|변명할 말이 없어 아무 말도 못 함.
+유명무실|有名無實|이름만 있고 실제 내용이나 실속은 없음.
+유비무환|有備無患|미리 준비하면 걱정할 일이 없음.
+유유상종|類類相從|비슷한 사람끼리 서로 어울림.
+이구동성|異口同聲|여러 사람이 한목소리로 같은 말을 함.
+이심전심|以心傳心|말하지 않아도 서로 마음이 통함.
+이열치열|以熱治熱|열로 열을 다스림.
+인과응보|因果應報|행동의 선악에 따라 그에 맞는 결과를 받음.
+인산인해|人山人海|사람이 매우 많이 모임.
+일거양득|一擧兩得|한 가지 일로 두 가지 이익을 얻음.
+일망타진|一網打盡|한꺼번에 모두 잡아들임.
+일사천리|一瀉千里|일이 거침없이 빠르게 진행됨.
+일석이조|一石二鳥|한 가지 일로 두 가지 이익을 얻음.
+일취월장|日就月將|날마다 달마다 계속 발전함.
+일편단심|一片丹心|한결같이 변하지 않는 참된 마음.
+일확천금|一攫千金|한 번에 큰 재물을 얻음.
+자승자박|自繩自縛|자신의 말이나 행동 때문에 스스로 곤란해짐.
+자업자득|自業自得|자기가 한 일의 결과를 자기가 받음.
+자포자기|自暴自棄|스스로 자신을 포기하고 돌보지 않음.
+자화자찬|自畫自讚|자기가 한 일을 스스로 칭찬함.
+작심삼일|作心三日|굳게 먹은 마음이 오래가지 못함.
+적반하장|賊反荷杖|잘못한 사람이 도리어 상대를 나무람.
+적재적소|適材適所|알맞은 인재를 알맞은 자리에 씀.
+전전긍긍|戰戰兢兢|몹시 두려워하며 조심함.
+전화위복|轉禍爲福|재앙이나 불행이 바뀌어 복이 됨.
+절차탁마|切磋琢磨|학문과 덕을 갈고닦음.
+조삼모사|朝三暮四|작은 차이에 매여 결과가 같음을 모르거나 얕은 꾀로 남을 속임.
+좌불안석|坐不安席|마음이 불안하여 가만히 앉아 있지 못함.
+주객전도|主客顚倒|중요한 것과 덜 중요한 것의 위치가 뒤바뀜.
+죽마고우|竹馬故友|어릴 때부터 함께 자란 친한 친구.
+중구난방|衆口難防|여러 사람이 제각기 말하여 막기 어려움.
+지기지우|知己之友|자신을 깊이 이해해 주는 친구.
+지리멸렬|支離滅裂|이리저리 흩어지고 찢겨 갈피를 잡을 수 없음.
+진퇴양난|進退兩難|나아갈 수도 물러설 수도 없는 어려운 처지.
+천고마비|天高馬肥|하늘이 높고 말이 살찌는 계절인 가을.
+천신만고|千辛萬苦|온갖 고생과 어려움.
+천차만별|千差萬別|여러 가지 차이가 매우 많음.
+천하태평|天下太平|세상이 평화롭고 걱정이 없음.
+청출어람|靑出於藍|제자가 스승보다 더 뛰어남.
+초지일관|初志一貫|처음 세운 뜻을 끝까지 지킴.
+촌철살인|寸鐵殺人|짧은 말로 핵심을 찔러 깊은 감동이나 충격을 줌.
+칠전팔기|七顚八起|여러 번 실패해도 굴하지 않고 다시 일어남.
+타산지석|他山之石|다른 사람의 잘못도 자신의 수양에 도움이 됨.
+탁상공론|卓上空論|현실성이 없이 말로만 하는 헛된 논의.
+토사구팽|兔死狗烹|필요할 때 쓰고 쓸모가 없어지면 버림.
+파죽지세|破竹之勢|적을 거침없이 물리치며 나아가는 기세.
+표리부동|表裏不同|겉으로 드러난 모습과 속마음이 다름.
+풍전등화|風前燈火|바람 앞의 등불처럼 매우 위태로운 상황.
+학수고대|鶴首苦待|몹시 애타게 기다림.
+허심탄회|虛心坦懷|마음을 비우고 솔직하게 생각을 털어놓음.
+형설지공|螢雪之功|어려운 환경에서 부지런히 공부한 노력과 성과.
+호가호위|狐假虎威|남의 권세를 빌려 위세를 부림.
+호사다마|好事多魔|좋은 일에는 방해가 많이 따름.
+호시탐탐|虎視眈眈|기회를 노리며 날카롭게 지켜봄.
+화룡점정|畫龍點睛|가장 중요한 부분을 완성하여 전체를 살림.
+환골탈태|換骨奪胎|모습이나 수준이 몰라보게 좋아짐.
+횡설수설|橫說竪說|조리 없이 이 말 저 말을 늘어놓음.
+흥진비래|興盡悲來|즐거운 일이 다하면 슬픈 일이 찾아옴.`;
+const DATA=raw.split('\n').map(r=>{const [word,hanja,meaning]=r.split('|');return{word,hanja,meaning}});
+const $=id=>document.getElementById(id);const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+let best=0,storageOK=true;try{best=Number(localStorage.getItem('idiomDetective.best.v1'))||0}catch(e){storageOK=false}const showBest=()=>{$('best').textContent=`최고 ${best}점`};showBest();$('count').textContent=DATA.length;if(!storageOK)$('storage').textContent='이 브라우저에서는 최고 점수가 저장되지 않습니다.';
+let deck=[],index=0,score=0,correct=0,wrong=[],history=[],mode='choice',practice=false,active=false,usedHint=false,deadline=0,timer=null,current=null,answer='',front=true;
+function screen(id){['home','play','result'].forEach(s=>$(s).classList.toggle('hidden',s!==id));window.scrollTo(0,0)}
+function start(items=null){clearInterval(timer);practice=Array.isArray(items);deck=shuffle(items||DATA).slice(0,practice?items.length:10);index=0;score=0;correct=0;wrong=[];history=[];mode=$('mode').value;screen('play');question()}
+function question(){current=deck[index];front=Math.random()<.5;answer=front?current.word.slice(2):current.word.slice(0,2);active=true;usedHint=false;$('progress').textContent=`${practice?'복습 ':''}${index+1} / ${deck.length}`;$('points').textContent=`${score}점`;$('direction').textContent=front?'뒤의 두 글자를 맞혀 보세요':'앞의 두 글자를 맞혀 보세요';$('puzzle').innerHTML='';[...current.word].forEach((c,i)=>{let t=document.createElement('span');let blank=front?i>=2:i<2;t.className='tile'+(blank?' blank':'');t.textContent=blank?'?':c;$('puzzle').append(t)});['feedback','next','hintText'].forEach(id=>$(id).classList.add('hidden'));$('hint').disabled=false;$('typed').disabled=false;$('typed').value='';$('submit').disabled=false;$('choices').innerHTML='';$('choices').classList.toggle('hidden',mode!=='choice');$('form').classList.toggle('hidden',mode!=='input');
+// Exclude distractors that would form another valid idiom in this question.
+const known=new Set(DATA.map(d=>d.word));const pool=[...new Set(DATA.map(d=>front?d.word.slice(2):d.word.slice(0,2)))].filter(s=>s!==answer&&!known.has(front?current.word.slice(0,2)+s:s+current.word.slice(2)));
+shuffle([answer,...shuffle(pool).slice(0,3)]).forEach(s=>{let b=document.createElement('button');b.textContent=s;b.onclick=()=>finish(s);$('choices').append(b)});deadline=Date.now()+15000;tick();timer=setInterval(tick,80);if(mode==='input')$('typed').focus()}
+function tick(){if(!active)return;const left=Math.max(0,deadline-Date.now());$('time').textContent=`${Math.ceil(left/1000)}초`;$('clock').style.width=(left/15000*100)+'%';if(left===0)finish(null)}
+function finish(value){if(!active)return;if(Date.now()>=deadline)value=null;active=false;clearInterval(timer);const ok=value===answer;let earned=ok?(usedHint?7:10):0;score+=earned;if(ok)correct++;const row={...current,given:value,answer,front,usedHint,ok};history.push(row);if(!ok)wrong.push(row);$('points').textContent=`${score}점`;$('hint').disabled=true;$('typed').disabled=true;$('submit').disabled=true;[...$('choices').children].forEach(b=>{b.disabled=true;if(b.textContent===answer)b.classList.add('correct');else if(b.textContent===value)b.classList.add('wrong')});$('feedback').replaceChildren();let status=document.createElement('strong');status.textContent=ok?`정답! +${earned}점`:value===null?'시간이 다 되었어요.':`아쉬워요. 선택한 답: ${value}`;let a=document.createElement('div');a.className='answer';a.textContent=`${current.word} · ${current.hanja}`;let p=document.createElement('p');p.textContent=current.meaning;$('feedback').append(status,a,p);$('feedback').classList.remove('hidden');$('next').textContent=index===deck.length-1?'결과 보기 →':'다음 문제 →';$('next').classList.remove('hidden');$('next').focus()}
+function results(aborted=false){active=false;clearInterval(timer);screen('result');if(!practice&&!aborted&&score>best){best=score;try{localStorage.setItem('idiomDetective.best.v1',String(best))}catch(e){storageOK=false}}showBest();$('resultTag').textContent=practice?'틀린 문제 재도전 결과':aborted?'이번 판을 종료했어요':'오늘의 탐정 기록';$('score').textContent=`${score}점`;$('summary').textContent=`${history.length}문제 풀이 · 정답 ${correct}개 · 오답 ${wrong.length}개${aborted?' · 남은 문제 '+(deck.length-history.length)+'개':''}`;$('record').textContent=`${practice?'복습 점수는 최고 기록에 반영하지 않습니다.':'10문제 완주 기록만 최고 점수에 반영합니다.'} 최고 ${best}점${storageOK?'':' · 현재 최고 점수 저장 불가'}`;$('reviews').replaceChildren();if(!wrong.length)$('reviews').textContent=history.length?'틀린 문제가 없어요!':'아직 푼 문제가 없어요.';wrong.forEach(r=>{let box=document.createElement('div');box.className='review';let title=document.createElement('strong');title.textContent=`${r.word} (${r.hanja})`;let p=document.createElement('p');p.textContent=r.meaning;let m=document.createElement('small');m.textContent=`문제: ${r.front?r.word.slice(0,2)+'□□':'□□'+r.word.slice(2)} · 내 답: ${r.given===null?'시간 초과':r.given} · 정답: ${r.answer}`;box.append(title,p,m);$('reviews').append(box)});$('reviewStart').disabled=!wrong.length}
+$('start').onclick=()=>start();$('again').onclick=()=>start();$('reviewStart').onclick=()=>start(wrong.map(({word,hanja,meaning})=>({word,hanja,meaning})));$('back').onclick=()=>screen('home');$('next').onclick=()=>{index++;if(index>=deck.length)results();else question()};$('hint').onclick=()=>{if(!active)return;if(Date.now()>=deadline){finish(null);return}usedHint=true;$('hintText').textContent=current.meaning;$('hintText').classList.remove('hidden');$('hint').disabled=true};$('form').onsubmit=e=>{e.preventDefault();if(e.isComposing)return;let v=$('typed').value.normalize('NFC').replace(/\s/g,'');if([...v].length!==2){$('typed').setCustomValidity('한글 두 글자를 입력해 주세요.');$('typed').reportValidity();return}finish(v)};$('typed').oninput=()=>$('typed').setCustomValidity('');$('quit').onclick=()=>{if(confirm('이번 판을 종료하고 지금까지의 결과를 볼까요?'))results(true)};document.addEventListener('visibilitychange',()=>{if(!document.hidden&&active)tick()});
+</script></html>
